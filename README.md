@@ -38,14 +38,14 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 
 ## Result
 
-![result](pics/epaper-result.jpeg)
+![result](pics/epaper-result.jpg)
 *Here you can see the result mounted to the wall*
 
 ## Look inside the housing
 
 In this picture, you can see the ESP32 and the E-Paper Display inside the Housing. The ESP32 is connected to the E-Paper Display via SPI. The ESP32 is powered by a USB cable which is connected to a USB power supply. The USB cable is routed through the housing and glued to the bottom of the housing so the USB cable is easily replaceable.
 
-![inside epaper](pics/epaper-inside.jpeg)
+![inside epaper](pics/epaper-inside.jpg)
 
 ## Troubleshoot
 
