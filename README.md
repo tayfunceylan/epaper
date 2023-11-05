@@ -4,6 +4,9 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 
 - [E-Paper Project](#e-paper-project)
   - [What do you need for this project](#what-do-you-need-for-this-project)
+    - [Hardware](#hardware)
+    - [Tools](#tools)
+  - [Result](#result)
   - [Look inside the housing](#look-inside-the-housing)
   - [Troubleshoot](#troubleshoot)
     - [ESP32 is too thick for the housing](#esp32-is-too-thick-for-the-housing)
@@ -21,9 +24,19 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 
 ## What do you need for this project
 
-- [ESP32 with SPI Interface](https://www.amazon.de/s?k=esp32+spi) (18,85€ @ [amazon.de](https://www.amazon.de/dp/B07RM1BBVF))
+### Hardware
+
+- [ESP32 with SPI Interface](https://www.amazon.de/s?k=esp32+spi) (18,85€ @ [amazon.de](https://www.amazon.de/dp/B07RM1BBVF) Stand: 04.11.23)
 - [E-Paper Display](https://www.amazon.de/s?k=e+paper+waveshare) (54,90€ @ [welectron.com](https://www.welectron.com/Waveshare-13187-75inch-e-Paper) Stand: 04.11.23)
-- Housing for the E-Paper Display (5,90€ @ [welectron.com](https://www.welectron.com/Waveshare-16089-75inch-e-Paper-Case))
+- Housing for the E-Paper Display (5,90€ @ [welectron.com](https://www.welectron.com/Waveshare-16089-75inch-e-Paper-Case) Stand: 04.11.23)
+- [USB Extension Cable](https://www.ebay.de/sch/i.html?_nkw=0%2C2m+micro+USB+Verl%C3%A4ngerungskabel) (5,99€ @ [ebay.de](https://www.ebay.de/itm/111496831577) Stand: 04.11.23)
+
+### Tools
+
+- Soldering Iron
+- Glue Gun
+
+## Result
 
 ![result](pics/epaper-result.jpeg)
 *Here you can see the result mounted to the wall*
