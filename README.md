@@ -4,11 +4,11 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 
 - [E-Paper Project](#e-paper-project)
   - [What do you need for this project](#what-do-you-need-for-this-project)
-  - [How often is data updated?](#how-often-is-data-updated)
   - [Look inside the housing](#look-inside-the-housing)
   - [Troubleshoot](#troubleshoot)
     - [ESP32 is too thick for the housing](#esp32-is-too-thick-for-the-housing)
     - [The USB Extension Cable is too thick for the housing](#the-usb-extension-cable-is-too-thick-for-the-housing)
+  - [How often is data updated?](#how-often-is-data-updated)
   - [What is displayed?](#what-is-displayed)
     - [Time and Date](#time-and-date)
     - [Train Departure Times](#train-departure-times)
@@ -28,14 +28,6 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 ![result](pics/epaper-result.jpeg)
 *Here you can see the result mounted to the wall*
 
-## How often is data updated?
-
-**Every minute**: Time, Date, Train Departure Times
-**Every 15 minutes**: Weather, News, Gym Utilization, Calendar, Shopping List, To-Do List
-
-To prevent the colors from washing out, there is a full refresh every hour.
-Otherwise, partial refreshes are always used.
-
 ## Look inside the housing
 
 In this picture, you can see the ESP32 and the E-Paper Display inside the Housing. The ESP32 is connected to the E-Paper Display via SPI. The ESP32 is powered by a USB cable which is connected to a USB power supply. The USB cable is routed through the housing and glued to the bottom of the housing so the USB cable is easily replaceable.
@@ -54,6 +46,22 @@ During this project, I encountered some difficulties.
 ### The USB Extension Cable is too thick for the housing
 
 I removed some plastic from the cable so it can fit in the housing.
+
+## How often is data updated?
+
+- **Every minute**
+  - Time and Date
+  - Train Departure Times
+- **Every 15 minutes**
+  - Weather
+  - News
+  - Gym Utilization
+  - Calendar
+  - Shopping List
+  - To-Do List
+
+To prevent the colors from washing out, there is a full refresh every hour.
+Otherwise, partial refreshes are always used.
 
 ## What is displayed?
 
