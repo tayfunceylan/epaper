@@ -1,6 +1,23 @@
 # E-Paper Project
 
-E-Paper Display hooked up with an ESP32 to Display various information such as weather, news, train departure, appointments and to do lists
+E-Paper Display hooked up with an ESP32 to Display various information such as weather, news, train departure, appointments and to-do lists. The ESP32 is programmed with Arduino IDE in C++.
+
+- [E-Paper Project](#e-paper-project)
+  - [What do you need for this project](#what-do-you-need-for-this-project)
+  - [How often is data updated?](#how-often-is-data-updated)
+  - [Look inside the housing](#look-inside-the-housing)
+  - [Troubleshoot](#troubleshoot)
+    - [ESP32 is too thick for the housing](#esp32-is-too-thick-for-the-housing)
+    - [The USB Extension Cable is too thick for the housing](#the-usb-extension-cable-is-too-thick-for-the-housing)
+  - [What is displayed?](#what-is-displayed)
+    - [Time and Date](#time-and-date)
+    - [Train Departure Times](#train-departure-times)
+    - [Gym Utilization](#gym-utilization)
+    - [Weather](#weather)
+    - [News](#news)
+    - [Calendar](#calendar)
+    - [Shopping List](#shopping-list)
+    - [To-Do List](#to-do-list)
 
 ## What do you need for this project
 
@@ -9,5 +26,73 @@ E-Paper Display hooked up with an ESP32 to Display various information such as w
 - Housing for the E-Paper Display (5,90€ @ [welectron.com](https://www.welectron.com/Waveshare-16089-75inch-e-Paper-Case))
 
 ![result](pics/epaper-result.jpeg)
+*Here you can see the result mounted to the wall*
+
+## How often is data updated?
+
+**Every minute**: Time, Date, Train Departure Times
+**Every 15 minutes**: Weather, News, Gym Utilization, Calendar, Shopping List, To-Do List
+
+To prevent the colors from washing out, there is a full refresh every hour.
+Otherwise, partial refreshes are always used.
+
+## Look inside the housing
+
+In this picture, you can see the ESP32 and the E-Paper Display inside the Housing. The ESP32 is connected to the E-Paper Display via SPI. The ESP32 is powered by a USB cable which is connected to a USB power supply. The USB cable is routed through the housing and glued to the bottom of the housing so the USB cable is easily replaceable.
+
 ![inside epaper](pics/epaper-inside.jpeg)
-![quickfix for esp32](pics/esp32-quickfix.jpg)
+
+## Troubleshoot
+
+During this project, I encountered some difficulties.
+
+### ESP32 is too thick for the housing
+
+|To solve this issue, I removed the chip and soldered a cable to the pins so that the chip is located next to the ESP. Now the ESP32 fits in the housing, great.|![quickfix for esp32](pics/esp32-quickfix.jpg)|
+|---|---|
+
+### The USB Extension Cable is too thick for the housing
+
+I removed some plastic from the cable so it can fit in the housing.
+
+## What is displayed?
+
+### Time and Date
+
+The Time and Date are displayed in the upper left corner.
+
+### Train Departure Times
+
+U35 departure times are listed for both directions and also with delays in minutes.
+API: [vrr.de](https://vrr.de)
+
+### Gym Utilization
+
+Also, there is gym utilization which indicates how many people are currently in your gym.
+API: [FitX](https://fitx.de)
+
+### Weather
+
+Current weather data is displayed in the upper right-hand corner. This displays the current temperature, wind speed and humidity. In addition, the highest and lowest temperatures are displayed for the next 7 days.
+API: [weather.com](https://weather.com)
+
+### News
+
+News are obtained through the NewsAPI. There is a limit of 100 requests per day. You cannot do more than one request every 15 minutes with a free account.
+API: [NewsAPI](https://newsapi.org)
+
+### Calendar
+
+Calendar events are displayed in the lower left corner. The events are listed with a countdown and the day of the week.
+The events are pulled from a Google calendar. If I want it to be displayed on the E-Paper, I just have to add an event with my calendar app.
+API: [Google](https://developers.google.com/calendar/api/v3/reference)
+
+### Shopping List
+
+The shopping list is pulled from a Microsoft's To-Do app. Just add something to the shopping list and it gets pulled from Microsoft Graph API.
+API: [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/resources/todo-overview)
+
+### To-Do List
+
+Same as [Shopping List](#shopping-list).
+API: [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/resources/todo-overview)
