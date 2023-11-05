@@ -85,35 +85,42 @@ The Time and Date are displayed in the upper left corner.
 ### Train Departure Times
 
 U35 departure times are listed for both directions and also with delays in minutes.
+
 API: [vrr.de](https://vrr.de)
 
 ### Gym Utilization
 
 Also, there is gym utilization which indicates how many people are currently in your gym.
+
 API: [FitX](https://fitx.de)
 
 ### Weather
 
 Current weather data is displayed in the upper right-hand corner. This displays the current temperature, wind speed and humidity. In addition, the highest and lowest temperatures are displayed for the next 7 days.
+
 API: [weather.com](https://weather.com)
 
 ### News
 
 News are obtained through the NewsAPI. There is a limit of 100 requests per day. You cannot do more than one request every 15 minutes with a free account.
+
 API: [NewsAPI](https://newsapi.org)
 
 ### Calendar
 
 Calendar events are displayed in the lower left corner. The events are listed with a countdown and the day of the week.
 The events are pulled from a Google calendar. If I want it to be displayed on the E-Paper, I just have to add an event with my calendar app.
+
 API: [Google](https://developers.google.com/calendar/api/v3/reference)
 
 ### Shopping List
 
 The shopping list is pulled from a Microsoft's To-Do app. Just add something to the shopping list and it gets pulled from Microsoft Graph API.
+
 API: [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/resources/todo-overview)
 
 ### To-Do List
 
 Same as [Shopping List](#shopping-list).
+
 API: [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/resources/todo-overview)
