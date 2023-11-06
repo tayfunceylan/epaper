@@ -2,7 +2,12 @@
 
 E-Paper Display hooked up with an ESP32 to Display various information such as weather, news, train departure, appointments and to-do lists. The ESP32 is programmed with Arduino IDE in C++.
 
+## Ré­su­mé / Thoughts on this project
+
+I have been using this E-Paper display since the end of 2022 and it turned out genuinely useful. It helps me catch my train on time and I won't miss any important appointments.
+
 - [E-Paper Project](#e-paper-project)
+  - [Ré­su­mé / Thoughts on this project](#résumé--thoughts-on-this-project)
   - [What do you need for this project](#what-do-you-need-for-this-project)
     - [Hardware](#hardware)
     - [Tools](#tools)
@@ -115,7 +120,7 @@ API: [Google](https://developers.google.com/calendar/api/v3/reference)
 
 ### Shopping List
 
-The shopping list is pulled from a Microsoft's To-Do app. Just add something to the shopping list and it gets pulled from Microsoft Graph API.
+The shopping list is pulled from Microsoft's To-Do app. Just add something to the shopping list and it gets pulled from Microsoft Graph API.
 
 API: [Microsoft Graph API](https://docs.microsoft.com/en-us/graph/api/resources/todo-overview)
 
