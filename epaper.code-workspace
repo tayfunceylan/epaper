@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "epaper",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"ostream": "cpp",
+			"print": "cpp",
+			"__config": "cpp",
+			"__locale": "cpp",
+			"__threading_support": "cpp",
+			"locale": "cpp",
+			"*.tcc": "cpp",
+			"mutex": "cpp",
+			"variant": "cpp",
+			"queue": "cpp",
+			"stack": "cpp",
+			"random": "cpp"
+		}
+	}
+}
