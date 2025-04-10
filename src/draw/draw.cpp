@@ -2,7 +2,7 @@
 #include <GxEPD2_BW.h>
 #include <U8g2_for_Adafruit_GFX.h>
 #include <ArduinoJson.h>
-#include "util.h"
+#include "util/util.h"
 #include "draw.h"
 
 // somehow there should be an easier way to do this

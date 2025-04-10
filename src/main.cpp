@@ -4,7 +4,7 @@
 #include "secrets.h"
 #include "api/api.h"
 #include "draw/draw.h"
-#include "util.h"
+#include "util/util.h"
 
 struct hashes
 {

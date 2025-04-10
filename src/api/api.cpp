@@ -1,7 +1,7 @@
 #include <WString.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-#include "util.h"
+#include "util/util.h"
 #include "secrets.h"
 
 String httpGETRequest(const String serverName, String auth)
