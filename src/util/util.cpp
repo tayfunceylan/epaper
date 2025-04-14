@@ -4,10 +4,13 @@
 #include <Timezone.h>
 #include <ArduinoJson.h>
 #include "SHA1.h"
+#include "util.h"
 
 TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 1, 120};
 TimeChangeRule CET = {"CET ", Last, Sun, Oct, 2, 60}; // Central European Standard Time
 Timezone GermanTimezone(CEST, CET);
+
+JsonDocument hashesDoc;
 
 void connectToWifi(const char *ssid, const char *password)
 {
@@ -146,7 +149,7 @@ String getTime(String planned, String est)
   return String(buffer) + " " + delay;
 }
 
-bool hasChanged(String &saved_hash, String input)
+bool hasChanged(const char *title, String input)
 {
   if (input == "null" || input == "[{}]" || input == "[]" || input == "{}") // nichts tun bei leeren obj
     return false;
@@ -156,10 +159,11 @@ bool hasChanged(String &saved_hash, String input)
     Serial.println(input.length());
     Serial.println(input);
   }
+  String saved_hash = hashesDoc[title].as<String>();
   String new_hash = getHash(input);
   if (saved_hash != new_hash)
   {
-    saved_hash = new_hash;
+    hashesDoc[title] = new_hash;
     return true;
   }
   return false;

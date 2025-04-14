@@ -3,6 +3,8 @@
 #include <LinkedList.h>
 #include <WiFi.h>
 
+extern JsonDocument hashesDoc;
+
 LinkedList<String> stringToArray(String input, int length, int size);
 LinkedList<String> stringToArray(String input, int length);
 void connectToWifi(const char *ssid, const char *password);
@@ -13,7 +15,7 @@ String readStringFromEEPROM();
 String getTime(String planned, String est);
 String countTwoByteChars(String &input);
 tm getTmFromString(String time);
-bool hasChanged(String &saved_hash, String input);
+bool hasChanged(const char *title, String input);
 String getStringFromStopEvent(JsonVariant stopEvent);
 String getHash(const String &input);
 String getStringFromCalEvent(JsonVariant event);

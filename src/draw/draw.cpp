@@ -41,59 +41,26 @@ void initDisplay()
     u8g2Fonts.begin(display);  // connect u8g2 procedures to Adafruit GFX
 }
 
-void drawFont(const char name[])
+void drawRows(int x, int y, int abstand, LinkedList<String> &list)
 {
-    // display.setRotation(0);
-    display.fillScreen(GxEPD_WHITE);
-    u8g2Fonts.setCursor(0, 0);
-    u8g2Fonts.println();
-    u8g2Fonts.println(name);
-    u8g2Fonts.println(" !\"#$%&'()*+,-./");
-    u8g2Fonts.println("0123456789:;<=>?");
-    u8g2Fonts.println("@ABCDEFGHIJKLMNO");
-    u8g2Fonts.println("PQRSTUVWXYZ[\\]^_");
-    u8g2Fonts.println("`abcdefghijklmno");
-    u8g2Fonts.println("pqrstuvwxyz{|}~ ");
-    u8g2Fonts.println("Umlaut ÄÖÜäéöü");
-}
-
-void showFont(const char name[], const uint8_t *font)
-{
-    display.setFullWindow();
-    display.setRotation(0);
-    u8g2Fonts.setFontMode(1);                  // use u8g2 transparent mode (this is default)
-    u8g2Fonts.setFontDirection(0);             // left to right (this is default)
-    u8g2Fonts.setForegroundColor(GxEPD_BLACK); // apply Adafruit GFX color
-    u8g2Fonts.setBackgroundColor(GxEPD_WHITE); // apply Adafruit GFX color
-    u8g2Fonts.setFont(font);                   // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    display.firstPage();
-    do
-    {
-        drawFont(name);
-    } while (display.nextPage());
-}
-
-void drawRows(int x, int y, int abstand, String list[], int size)
-{
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < list.size(); i++)
     {
         u8g2Fonts.setCursor(x, y + i * abstand);
         u8g2Fonts.print(list[i]);
     }
 }
 
-void drawRowsFromStopEvents(int x, int y, int abstand, JsonArray array)
+void drawWidget(const char *title, const uint8_t *font1, int x, int y, LinkedList<String> &list, const uint8_t *font2)
 {
-    int i = 0;
-    for (JsonVariant stopEvent : array)
-    {
-        u8g2Fonts.setCursor(x, y + i++ * abstand);
-        u8g2Fonts.print(getStringFromStopEvent(stopEvent));
-    }
+    u8g2Fonts.setCursor(x, y);
+    u8g2Fonts.setFont(font1); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
+    u8g2Fonts.print(title);
+    u8g2Fonts.setFont(font2); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
+    drawRows(x, y + 20, 15, list);
 }
 
 void clearScreen()
-{ // JsonDocument &doc
+{
     display.setFullWindow();
     display.setRotation(0);
     u8g2Fonts.setFontDirection(0);             // left to right (this is default)
@@ -105,35 +72,6 @@ void clearScreen()
         display.fillScreen(GxEPD_WHITE);
     } while (display.nextPage());
     display.powerOff();
-}
-
-void drawRowsFromCalEvents(int x, int y, int abstand, JsonArray array)
-{
-    int i = 0;
-    for (JsonVariant stopEvent : array)
-    {
-        u8g2Fonts.setCursor(x, y + i++ * abstand);
-        u8g2Fonts.print(getStringFromCalEvent(stopEvent));
-    }
-}
-
-void drawRowsFromJsonArray(int x, int y, int abstand, JsonArray array)
-{
-    int i = 0;
-    for (JsonVariant item : array)
-    {
-        u8g2Fonts.setCursor(x, y + i++ * abstand);
-        u8g2Fonts.print(item.as<const char *>());
-    }
-}
-
-void drawRows3(int x, int y, int abstand, LinkedList<String> array)
-{
-    for (int i = 0; i < array.size(); i++)
-    {
-        u8g2Fonts.setCursor(x, y + i * abstand);
-        u8g2Fonts.print(array.get(i));
-    }
 }
 
 void drawClock(int x, int y, String *arr)
@@ -159,40 +97,37 @@ void drawClock(int x)
     } while (display.nextPage());
 }
 
-void drawTafel(const char *title, int x, int y, JsonVariant array)
-{ // 6, 80
-    u8g2Fonts.setCursor(x, y);
-    u8g2Fonts.setFont(b2); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    u8g2Fonts.print(title);
-    u8g2Fonts.setFont(f); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    drawRowsFromStopEvents(x, y + 20, 15, array);
+void drawTafel(const char *title, int x, int y, JsonArray array)
+{
+    LinkedList<String> list;
+    for (JsonVariant stopEvent : array)
+    {
+        list.add(getStringFromStopEvent(stopEvent));
+    }
+    drawWidget(title, b2, x, y, list, f);
 }
 
 void drawCalendar(int x, int y, JsonVariant array)
-{ // 400 80
-    u8g2Fonts.setCursor(x, y);
-    u8g2Fonts.setFont(b1); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    u8g2Fonts.print("Kalendar");
-    u8g2Fonts.setFont(f); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/
-
-    drawRowsFromCalEvents(x, y + 20, 15, array);
+{
+    LinkedList<String> list;
+    for (JsonVariant calEvent : array.as<JsonArray>())
+    {
+        list.add(getStringFromCalEvent(calEvent));
+    }
+    drawWidget("Kalendar", b1, x, y, list, f);
 }
 
 void drawForecast(int x, int y, JsonVariant obj)
-{ // 400 80
-    u8g2Fonts.setCursor(x, y);
-    u8g2Fonts.setFont(b1); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    u8g2Fonts.print("Wetter");
-    u8g2Fonts.setFont(f); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/
-
+{
+    LinkedList<String> list;
     for (int i = 0; i < 6; i++)
     {
         String day = obj["dayOfWeek"][i].as<String>().substring(0, 2);
         int min = obj["calendarDayTemperatureMin"][i].as<int>();
         int max = obj["calendarDayTemperatureMax"][i].as<int>();
-        u8g2Fonts.setCursor(x, y + 20 + i * 15);
-        u8g2Fonts.print(forecastString(day, min, max));
+        list.add(forecastString(day, min, max));
     }
+    drawWidget("Wetter", b1, x, y, list, f);
 }
 
 void drawWeather(int x, int y, JsonVariant obj)
@@ -212,16 +147,44 @@ void drawWeather(int x, int y, JsonVariant obj)
 }
 
 void drawFitX(int x, int y, JsonVariant obj)
-{ // 400 80
-    u8g2Fonts.setCursor(x, y);
-    u8g2Fonts.setFont(b1); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
-    u8g2Fonts.print("FitX");
-    u8g2Fonts.setFont(f); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/
-
+{
+    LinkedList<String> list;
     for (int i = 0; i < 2; i++)
     {
         String item = obj[i].as<String>();
-        u8g2Fonts.setCursor(x, y + 20 + i * 15);
-        u8g2Fonts.print(item);
+        list.add(item);
     }
+    drawWidget("FitX", b1, x, y, list, f);
 }
+
+// void drawFont(const char name[])
+// {
+//     // display.setRotation(0);
+//     display.fillScreen(GxEPD_WHITE);
+//     u8g2Fonts.setCursor(0, 0);
+//     u8g2Fonts.println();
+//     u8g2Fonts.println(name);
+//     u8g2Fonts.println(" !\"#$%&'()*+,-./");
+//     u8g2Fonts.println("0123456789:;<=>?");
+//     u8g2Fonts.println("@ABCDEFGHIJKLMNO");
+//     u8g2Fonts.println("PQRSTUVWXYZ[\\]^_");
+//     u8g2Fonts.println("`abcdefghijklmno");
+//     u8g2Fonts.println("pqrstuvwxyz{|}~ ");
+//     u8g2Fonts.println("Umlaut ÄÖÜäéöü");
+// }
+
+// void showFont(const char name[], const uint8_t *font)
+// {
+//     display.setFullWindow();
+//     display.setRotation(0);
+//     u8g2Fonts.setFontMode(1);                  // use u8g2 transparent mode (this is default)
+//     u8g2Fonts.setFontDirection(0);             // left to right (this is default)
+//     u8g2Fonts.setForegroundColor(GxEPD_BLACK); // apply Adafruit GFX color
+//     u8g2Fonts.setBackgroundColor(GxEPD_WHITE); // apply Adafruit GFX color
+//     u8g2Fonts.setFont(font);                   // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
+//     display.firstPage();
+//     do
+//     {
+//         drawFont(name);
+//     } while (display.nextPage());
+// }

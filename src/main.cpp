@@ -6,24 +6,6 @@
 #include "draw/draw.h"
 #include "util/util.h"
 
-struct hashes
-{
-  String tafel1 = "";
-  String tafel2 = "";
-  String tafel3 = "";
-  String cal = "";
-  String temp = "";
-  String forecast = "";
-  String fitx = "";
-};
-
-struct hashes hashes;
-
-void resetHashes()
-{
-  hashes.tafel1 = hashes.tafel2 = hashes.tafel3 = hashes.cal = hashes.temp = hashes.forecast = hashes.fitx = "";
-}
-
 JsonDocument globalDoc;
 
 void partialUpdateCallback(void (*drawFunc)(int, int, JsonVariant), JsonVariant array, int x, int y, int w, int h, int dy = -14, int dh = -14)
@@ -37,12 +19,11 @@ void partialUpdateCallback(void (*drawFunc)(int, int, JsonVariant), JsonVariant 
   } while (display.nextPage());
 }
 
-template <typename T>
-void partialUpdateCallbackIfHasChanged(const char *title, T &hash, JsonVariant data,
+void partialUpdateCallbackIfHasChanged(const char *title, JsonVariant data,
                                        void (*drawFunc)(int, int, JsonVariant),
                                        int x, int y, int w, int h, int dy = -14, int dh = -14)
 {
-  if (hasChanged(hash, data.as<String>()))
+  if (hasChanged(title, data.as<String>()))
   {
     Serial.println(String(title) + " has changed");
     partialUpdateCallback(drawFunc, data, x, y, w, h, dy, dh);
@@ -66,13 +47,13 @@ void drawTafel3(int x, int y, JsonVariant array) { drawTafel(BAHN_3, x, y, array
 
 void drawEverything(JsonDocument &doc)
 {
-  partialUpdateCallbackIfHasChanged(BAHN_1, hashes.tafel1, doc["vrr"]["tafel1"], drawTafel1, x1, py2, 280, 130);
-  partialUpdateCallbackIfHasChanged("fitx", hashes.fitx, doc["fitx"], drawFitX, x12, py2, 95, 130);
-  partialUpdateCallbackIfHasChanged(BAHN_2, hashes.tafel2, doc["vrr"]["tafel2"], drawTafel2, x2, py2, 280, 130);
-  partialUpdateCallbackIfHasChanged("forecast", hashes.forecast, doc["forecast"], drawForecast, x4, py2, 110, 130);
-  partialUpdateCallbackIfHasChanged("weather", hashes.temp, doc["weather"], drawWeather, x4, py1, 70, 48, -30, 0);
-  partialUpdateCallbackIfHasChanged(BAHN_3, hashes.tafel3, doc["vrr"]["tafel3"], drawTafel3, x1, py3, 280, 130);
-  partialUpdateCallbackIfHasChanged("cal", hashes.cal, doc["cal"], drawCalendar, x1, py4, 385, 155 + 28);
+  partialUpdateCallbackIfHasChanged(BAHN_1, doc["vrr"]["tafel1"], drawTafel1, x1, py2, 280, 130);
+  partialUpdateCallbackIfHasChanged("fitx", doc["fitx"], drawFitX, x12, py2, 95, 130);
+  partialUpdateCallbackIfHasChanged(BAHN_2, doc["vrr"]["tafel2"], drawTafel2, x2, py2, 280, 130);
+  partialUpdateCallbackIfHasChanged("forecast", doc["forecast"], drawForecast, x4, py2, 110, 130);
+  partialUpdateCallbackIfHasChanged("weather", doc["weather"], drawWeather, x4, py1, 70, 48, -30, 0);
+  partialUpdateCallbackIfHasChanged(BAHN_3, doc["vrr"]["tafel3"], drawTafel3, x1, py3, 280, 130);
+  partialUpdateCallbackIfHasChanged("cal", doc["cal"], drawCalendar, x1, py4, 385, 155 + 28);
 }
 
 void updateStopsData(JsonDocument &doc)
@@ -136,14 +117,12 @@ void every5Minute()
 
 void everyFullRefresh()
 {
-  resetHashes();
+  hashesDoc.clear();
   isFullRefresh = true;
 }
 
 void setup()
 {
-  // Serial.begin();
-  Serial.println();
   Serial.println("setup");
   initDisplay();
 

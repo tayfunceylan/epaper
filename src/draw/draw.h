@@ -16,7 +16,7 @@ void initDisplay();
 void drawFont(const char name[]);
 void showFont(const char name[], const uint8_t *font);
 void clearScreen();
-void drawTafel(const char *title, int x, int y, JsonVariant array);
+void drawTafel(const char *title, int x, int y, JsonArray array);
 void drawCalendar(int x, int y, JsonVariant array);
 void drawForecast(int x, int y, JsonVariant obj);
 void drawWeather(int x, int y, JsonVariant obj);
