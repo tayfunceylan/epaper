@@ -124,10 +124,10 @@ String getTokenGoogle()
   return getToken(server, payload);
 }
 
-JsonDocument getCal()
+JsonDocument getCal(const char *calendarID)
 {
   // Serial.println("String instead of json");
-  String url = String("https://www.googleapis.com/calendar/v3/calendars/") + GOOGLE_CALENDAR_ID + "/events" + "?orderBy=startTime" + "&singleEvents=True" + "&maxResults=8" + "&timeMin=" + getLocalTimeFull();
+  String url = String("https://www.googleapis.com/calendar/v3/calendars/") + calendarID + "/events" + "?orderBy=startTime" + "&singleEvents=True" + "&maxResults=8" + "&timeMin=" + getLocalTimeFull();
 
   String res = httpGETRequest(url, getTokenGoogle());
 
@@ -214,14 +214,4 @@ String getFitXAuslastung(const char *studio, int studioID)
   char buffer[20];
   sprintf(buffer, "%s: %2d%%", studio, getFitXAuslastung(studioID));
   return String(buffer);
-}
-
-String getFitX1()
-{
-  return getFitXAuslastung(FITX_STUDIO_NAME_1, FITX_STUDIO_ID_1);
-}
-
-String getFitX2()
-{
-  return getFitXAuslastung(FITX_STUDIO_NAME_2, FITX_STUDIO_ID_2);
 }

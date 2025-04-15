@@ -8,25 +8,25 @@
 
 JsonDocument globalDoc;
 
-void partialUpdateCallback(void (*drawFunc)(int, int, JsonVariant), JsonVariant array, int x, int y, int w, int h, int dy = -14, int dh = -14)
+void partialUpdateCallback(void (*drawFunc)(const char*, int, int, JsonVariant), const char *title, JsonVariant array, int x, int y, int w, int h, int dy = -14, int dh = -14)
 {
   display.firstPage();
   do
   {
     display.fillScreen(GxEPD_WHITE);
     display.setPartialWindow(x, y + dy, w, h + dh);
-    drawFunc(x, y, array);
+    drawFunc(title, x, y, array);
   } while (display.nextPage());
 }
 
 void partialUpdateCallbackIfHasChanged(const char *title, JsonVariant data,
-                                       void (*drawFunc)(int, int, JsonVariant),
+                                       void (*drawFunc)(const char*, int, int, JsonVariant),
                                        int x, int y, int w, int h, int dy = -14, int dh = -14)
 {
   if (hasChanged(title, data.as<String>()))
   {
     Serial.println(String(title) + " has changed");
-    partialUpdateCallback(drawFunc, data, x, y, w, h, dy, dh);
+    partialUpdateCallback(drawFunc, title, data, x, y, w, h, dy, dh);
   }
 }
 
@@ -41,19 +41,16 @@ int py2 = py1 + 30 + 10; // 60
 int py3 = py2 + 130;     // 190
 int py4 = py3 + 135;     // 325
 
-void drawTafel1(int x, int y, JsonVariant array) { drawTafel(BAHN_1, x, y, array); }
-void drawTafel2(int x, int y, JsonVariant array) { drawTafel(BAHN_2, x, y, array); }
-void drawTafel3(int x, int y, JsonVariant array) { drawTafel(BAHN_3, x, y, array); }
-
 void drawEverything(JsonDocument &doc)
 {
-  partialUpdateCallbackIfHasChanged(BAHN_1, doc["vrr"]["tafel1"], drawTafel1, x1, py2, 280, 130);
-  partialUpdateCallbackIfHasChanged("fitx", doc["fitx"], drawFitX, x12, py2, 95, 130);
-  partialUpdateCallbackIfHasChanged(BAHN_2, doc["vrr"]["tafel2"], drawTafel2, x2, py2, 280, 130);
-  partialUpdateCallbackIfHasChanged("forecast", doc["forecast"], drawForecast, x4, py2, 110, 130);
-  partialUpdateCallbackIfHasChanged("weather", doc["weather"], drawWeather, x4, py1, 70, 48, -30, 0);
-  partialUpdateCallbackIfHasChanged(BAHN_3, doc["vrr"]["tafel3"], drawTafel3, x1, py3, 280, 130);
-  partialUpdateCallbackIfHasChanged("cal", doc["cal"], drawCalendar, x1, py4, 385, 155 + 28);
+  partialUpdateCallbackIfHasChanged(BAHN_1, doc["vrr"]["tafel1"], drawTafel, x1, py2, 280, 130);
+  partialUpdateCallbackIfHasChanged("FitX", doc["fitx"], drawFitX, x12, py2, 95, 130);
+  partialUpdateCallbackIfHasChanged(BAHN_2, doc["vrr"]["tafel2"], drawTafel, x2, py2, 280, 130);
+  partialUpdateCallbackIfHasChanged("Wetter", doc["forecast"], drawForecast, x4, py2, 110, 130);
+  partialUpdateCallbackIfHasChanged("CurrentTemp", doc["weather"], drawCurrentTemp, x4, py1, 70, 48, -30, 0);
+  partialUpdateCallbackIfHasChanged(BAHN_3, doc["vrr"]["tafel3"], drawTafel, x1, py3, 280, 130);
+  partialUpdateCallbackIfHasChanged("Kalendar", doc["cal"], drawCalendar, x1, py4, 385, 155 + 28);
+  partialUpdateCallbackIfHasChanged("Plan", doc["cal2"], drawCalendar, x2, py4, 385, 155 + 28);
 }
 
 void updateStopsData(JsonDocument &doc)
@@ -65,11 +62,12 @@ void updateStopsData(JsonDocument &doc)
 
 void updateDataExceptStops(JsonDocument &doc)
 {
-  doc["cal"] = getCal();
+  doc["cal"] = getCal(GOOGLE_CALENDAR_ID);
+  doc["cal2"] = getCal(GOOGLE_CALENDAR_ID_2);
   doc["weather"] = getWeather();
   doc["forecast"] = getForecast();
-  doc["fitx"][0] = getFitX1();
-  doc["fitx"][1] = getFitX2();
+  doc["fitx"][0] = getFitXAuslastung(FITX_STUDIO_NAME_1, FITX_STUDIO_ID_1);
+  doc["fitx"][1] = getFitXAuslastung(FITX_STUDIO_NAME_2, FITX_STUDIO_ID_2);
 }
 
 JsonDocument updateAllData(JsonDocument &doc)

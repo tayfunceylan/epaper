@@ -97,27 +97,27 @@ void drawClock(int x)
     } while (display.nextPage());
 }
 
-void drawTafel(const char *title, int x, int y, JsonArray array)
+void drawTafel(const char *title, int x, int y, JsonVariant array)
 {
     LinkedList<String> list;
-    for (JsonVariant stopEvent : array)
+    for (JsonVariant stopEvent : array.as<JsonArray>())
     {
         list.add(getStringFromStopEvent(stopEvent));
     }
     drawWidget(title, b2, x, y, list, f);
 }
 
-void drawCalendar(int x, int y, JsonVariant array)
+void drawCalendar(const char *title, int x, int y, JsonVariant array)
 {
     LinkedList<String> list;
     for (JsonVariant calEvent : array.as<JsonArray>())
     {
         list.add(getStringFromCalEvent(calEvent));
     }
-    drawWidget("Kalendar", b1, x, y, list, f);
+    drawWidget(title, b1, x, y, list, f);
 }
 
-void drawForecast(int x, int y, JsonVariant obj)
+void drawForecast(const char *title, int x, int y, JsonVariant obj)
 {
     LinkedList<String> list;
     for (int i = 0; i < 6; i++)
@@ -127,10 +127,10 @@ void drawForecast(int x, int y, JsonVariant obj)
         int max = obj["calendarDayTemperatureMax"][i].as<int>();
         list.add(forecastString(day, min, max));
     }
-    drawWidget("Wetter", b1, x, y, list, f);
+    drawWidget(title, b1, x, y, list, f);
 }
 
-void drawWeather(int x, int y, JsonVariant obj)
+void drawCurrentTemp(const char *title, int x, int y, JsonVariant obj)
 { // 400 80
     u8g2Fonts.setCursor(x, y);
     u8g2Fonts.setFont(u8g2_font_profont29_mf); // select u8g2 font from here: https://github.com/olikraus/u8g2/wiki/fntlistall
@@ -146,7 +146,7 @@ void drawWeather(int x, int y, JsonVariant obj)
     u8g2Fonts.print(windspeed);
 }
 
-void drawFitX(int x, int y, JsonVariant obj)
+void drawFitX(const char *title, int x, int y, JsonVariant obj)
 {
     LinkedList<String> list;
     for (int i = 0; i < 2; i++)

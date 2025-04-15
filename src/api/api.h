@@ -38,7 +38,7 @@ String getToken(String server, String payload);
 String getTokenGoogle();
 
 // Retrieves calendar events from Google Calendar and returns them as a JsonDocument.
-JsonDocument getCal();
+JsonDocument getCal(const char *calendarID);
 
 // Retrieves a 5-day weather forecast from the weather API and returns it as a JsonDocument.
 JsonDocument getForecast();
