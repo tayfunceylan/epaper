@@ -8,15 +8,16 @@ I have been using this E-Paper display since the end of 2022 and it turned out g
 
 - [E-Paper Project](#e-paper-project)
   - [Ré­su­mé / Thoughts on this project](#résumé--thoughts-on-this-project)
-  - [What do you need for this project](#what-do-you-need-for-this-project)
+  - [What do you need for this project?](#what-do-you-need-for-this-project)
     - [Hardware](#hardware)
     - [Tools](#tools)
   - [Result](#result)
   - [Look inside the housing](#look-inside-the-housing)
+  - [Config](#config)
   - [Troubleshoot](#troubleshoot)
     - [ESP32 is too thick for the housing](#esp32-is-too-thick-for-the-housing)
     - [The USB Extension Cable is too thick for the housing](#the-usb-extension-cable-is-too-thick-for-the-housing)
-  - [How often is data updated?](#how-often-is-data-updated)
+  - [How often is the data updated?](#how-often-is-the-data-updated)
   - [What is displayed?](#what-is-displayed)
     - [Time and Date](#time-and-date)
     - [Train Departure Times](#train-departure-times)
@@ -27,7 +28,7 @@ I have been using this E-Paper display since the end of 2022 and it turned out g
     - [Shopping List](#shopping-list)
     - [To-Do List](#to-do-list)
 
-## What do you need for this project
+## What do you need for this project?
 
 ### Hardware
 
@@ -69,7 +70,7 @@ During this project, I encountered some difficulties.
 
 I removed some plastic from the cable so it can fit in the housing.
 
-## How often is data updated?
+## How often is the data updated?
 
 - **Every minute**
   - Time and Date
