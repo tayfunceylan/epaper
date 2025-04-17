@@ -52,6 +52,10 @@ In this picture, you can see the ESP32 and the E-Paper Display inside the Housin
 
 ![inside epaper](pics/epaper-inside.jpg)
 
+## Config
+
+A part on how to configure this project is comming soon.
+
 ## Troubleshoot
 
 During this project, I encountered some difficulties.
