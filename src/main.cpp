@@ -25,7 +25,7 @@ void partialUpdateCallbackIfHasChanged(const char *title, JsonVariant data,
 {
   if (hasChanged(title, data.as<String>()))
   {
-    Serial.println(String(title) + " has changed");
+    Serial.printf("%s has changed\n", title);
     partialUpdateCallback(drawFunc, title, data, x, y, w, h, dy, dh);
   }
 }
@@ -49,6 +49,7 @@ void drawEverything(JsonDocument &doc)
   partialUpdateCallbackIfHasChanged("Wetter", doc["forecast"], drawForecast, x4, py2, 110, 130);
   partialUpdateCallbackIfHasChanged("CurrentTemp", doc["weather"], drawCurrentTemp, x4, py1, 70, 48, -30, 0);
   partialUpdateCallbackIfHasChanged(BAHN_3, doc["vrr"]["tafel3"], drawTafel, x1, py3, 280, 130);
+  partialUpdateCallbackIfHasChanged("Namaz Vakti", doc["namaz"], drawNamaz, x2, py3, 280, 130);
   partialUpdateCallbackIfHasChanged("Kalendar", doc["cal"], drawCalendar, x1, py4, 385, 155 + 28);
   partialUpdateCallbackIfHasChanged("Plan", doc["cal2"], drawCalendar, x2, py4, 385, 155 + 28);
 }
@@ -70,12 +71,16 @@ void updateDataExceptStops(JsonDocument &doc)
   doc["fitx"][1] = getFitXAuslastung(FITX_STUDIO_NAME_2, FITX_STUDIO_ID_2);
 }
 
-JsonDocument updateAllData(JsonDocument &doc)
+void updateOnlyWeekly(JsonDocument &doc)
+{
+  doc["namaz"] = getNamaz(ILCE_KODU);
+}
+
+void updateAllData(JsonDocument &doc)
 {
   updateStopsData(doc);
   updateDataExceptStops(doc);
-  serializeJsonPretty(doc, Serial);
-  return doc;
+  updateOnlyWeekly(doc);
 }
 
 void showFirstTime()
@@ -106,11 +111,18 @@ void everyMinute()
   display.powerOff();
 }
 
-void every5Minute()
+void every15Minute()
 {
   if (!hasWifi())
     return;
   updateDataExceptStops(globalDoc);
+}
+
+void everyWeek()
+{
+  if (!hasWifi())
+    return;
+  updateOnlyWeekly(globalDoc);
 }
 
 void everyFullRefresh()
@@ -133,7 +145,8 @@ void setup()
 
   showFirstTime();
   Cron.create("45 59 * * * *", everyFullRefresh, false);   // full refresh every hour
-  Cron.create("20 14-59/15 * * * *", every5Minute, false); // pull datat every 15 minutes starting at 14 min 20 sec
+  Cron.create("20 14-59/15 * * * *", every15Minute, false); // pull datat every 15 minutes starting at 14 min 20 sec
+  Cron.create("20 0 1 * * 5", everyWeek, false); // pull datat every week
   Cron.create("0 * * * * *", everyMinute, false);          // refresh display every minute
 
   Serial.println("setup done");

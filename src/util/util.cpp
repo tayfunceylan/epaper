@@ -230,10 +230,10 @@ String getStringFromStopEvent(JsonVariant stopEvent)
   String departureTimeEstimated = stopEvent["departureTimeEstimated"].as<String>();
   String time = getTime(departureTimePlanned, departureTimeEstimated);
 
-  char s[60];
-  snprintf(s, 60, "%s %-26s%s %s", linie, destination, countTwoByteChars(destinationString).c_str(), time.c_str());
+  char buffer[60];
+  snprintf(buffer, 60, "%s %-26s%s %s", linie, destination, countTwoByteChars(destinationString).c_str(), time.c_str());
 
-  return String(s);
+  return String(buffer);
 }
 
 struct tm getLocalTimeAsTm()
@@ -252,6 +252,15 @@ String getLocalTimeFull()
 
   char buffer[80];
   strftime(buffer, 80, "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+  return String(buffer);
+}
+
+String getLocalTimeIso8601()
+{
+  struct tm timeinfo = getLocalTimeAsTm();
+
+  char buffer[80];
+  strftime(buffer, 80, "%d.%m.%Y", &timeinfo);
   return String(buffer);
 }
 

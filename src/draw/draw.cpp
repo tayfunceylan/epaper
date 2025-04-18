@@ -107,6 +107,27 @@ void drawTafel(const char *title, int x, int y, JsonVariant array)
     drawWidget(title, b2, x, y, list, f);
 }
 
+void drawNamaz(const char *title, int x, int y, JsonVariant array)
+{
+    LinkedList<String> list;
+    String TodayIso8601 = getLocalTimeIso8601();
+    for (JsonVariant namazEvent : array.as<JsonArray>())
+    {
+        if (namazEvent["MiladiTarihKisaIso8601"].as<String>() != TodayIso8601)
+            continue;
+
+        const char *vakitIsim[] = {"Imsak", "Gunes", "Ogle", "Ikindi", "Aksam", "Yatsi"};
+        char buffer[30];
+
+        for (const char *vakit : vakitIsim)
+        {
+            snprintf(buffer, 30, "%-8s %s", vakit, namazEvent[vakit].as<const char *>());
+            list.add(String(buffer));
+        }
+    }
+    drawWidget(title, b2, x, y, list, f);
+}
+
 void drawCalendar(const char *title, int x, int y, JsonVariant array)
 {
     LinkedList<String> list;

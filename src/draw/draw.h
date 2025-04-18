@@ -21,4 +21,5 @@ void drawCalendar(const char *title, int x, int y, JsonVariant array);
 void drawForecast(const char *title, int x, int y, JsonVariant obj);
 void drawCurrentTemp(const char *title, int x, int y, JsonVariant obj);
 void drawFitX(const char *title, int x, int y, JsonVariant obj);
+void drawNamaz(const char *title, int x, int y, JsonVariant obj);
 void drawClock(int x);

@@ -4,60 +4,48 @@
 #include "util/util.h"
 #include "secrets.h"
 
-String httpGETRequest(const String serverName, String auth)
+JsonDocument httpGETRequest(const String &serverName, JsonDocument &filter, const String auth = "", bool debug = false)
 {
-  HTTPClient http;
+  HTTPClient client;
+  client.useHTTP10(true);
 
-  // Your Domain name with URL path or IP address with path
-  http.begin(serverName);
+  JsonDocument doc;
+  client.begin(serverName);
   if (auth.length() != 0)
-    http.addHeader("Authorization", "Bearer " + auth);
+    client.addHeader("Authorization", "Bearer " + auth);
 
-  // Send HTTP POST request
-  int httpResponseCode = http.GET();
-  String payload = "{}";
-
+  int httpResponseCode = client.GET();
   if (httpResponseCode > 0)
   {
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
-    payload = http.getString();
+
+    deserializeJson(doc, client.getStream(), DeserializationOption::Filter(filter));
+    if (debug)
+      serializeJsonPretty(doc, Serial);
   }
   else
   {
     Serial.print("Error code: ");
     Serial.println(httpResponseCode);
   }
-  // Free resources
-  http.end();
-
-  return payload;
+  client.end();
+  return doc;
 }
 
-String httpGETRequest(const String serverName)
+JsonDocument getStops(const char *url)
 {
-  return httpGETRequest(serverName, "");
-}
-
-JsonDocument getStops(String url)
-{
-  String res = httpGETRequest(url);
-
-  // create filter to only get the wanted values
   JsonDocument filter;
   filter["stopEvents"][0]["departureTimePlanned"] = true;
   filter["stopEvents"][0]["departureTimeEstimated"] = true;
   filter["stopEvents"][0]["transportation"]["destination"]["name"] = true;
   filter["stopEvents"][0]["transportation"]["disassembledName"] = true;
 
-  // create json document from text input
-  JsonDocument doc;
-  deserializeJson(doc, res, DeserializationOption::Filter(filter));
+  JsonDocument doc = httpGETRequest(url, filter);
 
-  // create json which will be returned
   JsonDocument output;
 
-  JsonArray array = doc["stopEvents"].as<JsonArray>(); // read from
+  JsonArray array = doc["stopEvents"].as<JsonArray>();
   for (JsonVariant stopEvent : array)
   {
     JsonDocument element;
@@ -70,18 +58,12 @@ JsonDocument getStops(String url)
   return output;
 }
 
-String refreshToken(String server, String payload)
+String refreshToken(const char *server, const char *payload)
 {
-  HTTPClient http;
-
-  // Your Domain name with URL path or IP address with path
-  http.begin(server);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-  if (server == "https://login.microsoftonline.com/common/oauth2/v2.0/token")
-    http.addHeader("Origin", "https://developer.microsoft.com");
-
-  // Send HTTP POST request
-  int httpResponseCode = http.POST(payload);
+  HTTPClient client;
+  client.begin(server);
+  client.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  int httpResponseCode = client.POST(payload);
 
   String res = "{}";
 
@@ -89,19 +71,19 @@ String refreshToken(String server, String payload)
   {
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
-    res = http.getString();
+    res = client.getString();
   }
   else
   {
     Serial.print("Error code: ");
     Serial.println(httpResponseCode);
   }
-  // Free resources
-  http.end();
+
+  client.end();
   return res;
 }
 
-String getToken(String server, String payload)
+String getToken(const char *server, const char *payload)
 {
   String res = refreshToken(server, payload);
 
@@ -119,9 +101,7 @@ String getToken(String server, String payload)
 
 String getTokenGoogle()
 {
-  String server = "https://oauth2.googleapis.com/token";
-  String payload = GOOGLE_REFRESH_TOKEN_PAYLOAD;
-  return getToken(server, payload);
+  return getToken("https://oauth2.googleapis.com/token", GOOGLE_REFRESH_TOKEN_PAYLOAD);
 }
 
 JsonDocument getCal(const char *calendarID)
@@ -129,67 +109,51 @@ JsonDocument getCal(const char *calendarID)
   // Serial.println("String instead of json");
   String url = String("https://www.googleapis.com/calendar/v3/calendars/") + calendarID + "/events" + "?orderBy=startTime" + "&singleEvents=True" + "&maxResults=8" + "&timeMin=" + getLocalTimeFull();
 
-  String res = httpGETRequest(url, getTokenGoogle());
-
-  // create filter to only get the wanted values
   JsonDocument filter;
   filter["items"][0]["summary"] = true;
   filter["items"][0]["start"] = true;
   filter["items"][0]["end"] = true;
 
-  // create json document from text input
-  JsonDocument doc;
-  deserializeJson(doc, res, DeserializationOption::Filter(filter));
-
-  return doc["items"];
+  JsonDocument doc = httpGETRequest(url, filter, getTokenGoogle())["items"];
+  return doc;
 }
 
 JsonDocument getForecast()
 {
-  String res = httpGETRequest(API_WEATHER_FORECAST_URL);
-
-  // create filter to only get the wanted values
   JsonDocument filter;
   filter["calendarDayTemperatureMax"] = true;
   filter["calendarDayTemperatureMin"] = true;
   filter["dayOfWeek"] = true;
   filter["daypart"][0]["wxPhraseLong"] = true;
 
-  // create json document from text input
-  JsonDocument doc;
-  deserializeJson(doc, res, DeserializationOption::Filter(filter));
-
-  return doc;
+  return httpGETRequest(API_WEATHER_FORECAST_URL, filter);
 }
 
 JsonDocument getWeather()
 {
-  String res = httpGETRequest(API_WEATHER_URL);
-
   // create filter to only get the wanted values
   JsonDocument filter;
   filter["observations"][0]["humidity"] = true;
   filter["observations"][0]["metric"]["temp"] = true;
   filter["observations"][0]["metric"]["windSpeed"] = true;
 
-  // create json document from text input
-  JsonDocument doc;
-  deserializeJson(doc, res, DeserializationOption::Filter(filter));
-
-  return doc["observations"][0];
+  return httpGETRequest(API_WEATHER_URL, filter)["observations"][0];
 }
 
 int getFitXAuslastung(int studio)
 {
+  HTTPClient client;
   // Serial.println("String instead of json");
   String url = String("https://mein.fitx.de/nox/public/v1/studios/") + studio + "/utilization";
 
-  HTTPClient http;
-  http.begin(url);
-  http.addHeader("X-Tenant", "fitx");
-  if (http.GET() != 200)
+  client.begin(url);
+  client.addHeader("X-Tenant", "fitx");
+  if (client.GET() != 200)
+  {
+    client.end();
     return 0;
-  String res = http.getString();
+  }
+  String res = client.getString();
 
   // create filter to only get the wanted values
   JsonDocument filter;
@@ -214,4 +178,22 @@ String getFitXAuslastung(const char *studio, int studioID)
   char buffer[20];
   sprintf(buffer, "%s: %2d%%", studio, getFitXAuslastung(studioID));
   return String(buffer);
+}
+
+JsonDocument getNamaz(const char *ilceKodu)
+{
+  static JsonDocument filter;
+  if (filter.isNull())
+  {
+    filter[0]["MiladiTarihKisaIso8601"] = true;
+    filter[0]["Imsak"] = true;
+    filter[0]["Gunes"] = true;
+    filter[0]["Ikindi"] = true;
+    filter[0]["Ogle"] = true;
+    filter[0]["Aksam"] = true;
+    filter[0]["Yatsi"] = true;
+  }
+
+  String url = String("https://ezanvakti.emushaf.net/vakitler/") + ilceKodu;
+  return httpGETRequest(url, filter);
 }

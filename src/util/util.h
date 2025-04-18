@@ -23,3 +23,4 @@ String forecastString(String day, int min, int max);
 String getLocalTimeFull();
 void printLocalTime();
 String *getLocalTime();
+String getLocalTimeIso8601();
